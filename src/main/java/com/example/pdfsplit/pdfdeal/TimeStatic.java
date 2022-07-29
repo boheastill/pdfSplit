@@ -1,10 +1,10 @@
-package com.pdfdeal;
+package com.example.pdfsplit.pdfdeal;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-
+/*执行时间统计*/
 public class TimeStatic {
     public static List<String> TIME_RECORD = new LinkedList<>();
     public final static String TRAIL = ".txt";

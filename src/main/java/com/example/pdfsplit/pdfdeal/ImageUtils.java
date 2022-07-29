@@ -1,4 +1,4 @@
-package com.pdfdeal;
+package com.example.pdfsplit.pdfdeal;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
@@ -7,7 +7,6 @@ import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.file.FileTypeDirectory;
 import com.drew.metadata.jfif.JfifDirectory;
 import org.apache.commons.imaging.ImageInfo;
-import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -20,9 +19,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.pdfdeal.MulThreadUtil.listMulThreadDealOld;
+import static com.example.pdfsplit.pdfdeal.MulThreadUtil.listMulThreadDealOld;
 
-
+/*切图*/
 public class ImageUtils {
     static String sep = File.separator;
 
@@ -31,7 +30,7 @@ public class ImageUtils {
         ImageInfo imageInfo = null;
         try {
             imageInfo = Imaging.getImageInfo(new File(path));
-        } catch (ImageReadException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         assert imageInfo != null;
@@ -162,9 +161,11 @@ public class ImageUtils {
                     PDFRenderer renderer1 = new PDFRenderer(doc1);
                     BufferedImage image = renderer1.renderImageWithDPI(idx, 105); // Windows native DPI
                     ImageIO.write(image, type, new File(targetAddress + sep + filename + "_" + idx + "." + type));
-//                    Thread.sleep(1500);
+                    System.out.println("多线程任务执行" + idx);
+
+                    //                    Thread.sleep(1500);
                 } catch (Exception e) {
-                    System.out.println("报错了");
+                    System.out.println("报错了" + idx);
                     e.printStackTrace();
                     return false;
                 }

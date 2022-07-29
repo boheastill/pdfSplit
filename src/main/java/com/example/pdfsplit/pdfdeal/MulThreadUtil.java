@@ -1,11 +1,13 @@
-package com.pdfdeal;
+package com.example.pdfsplit.pdfdeal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
+/*多线程*/
 public class MulThreadUtil {
     /**
      * * @Param indexOfStart 待处理列表开始值 含
@@ -48,7 +50,7 @@ public class MulThreadUtil {
 
             Future future = executorService.submit(runnable);//非阻塞执行 （最大线程+队列长度）个任务，其他任务阻塞于此。此时线程每消费一个任务， 新非阻塞执行数量加一。
             futereList.add(future);
-          //  System.out.println("收集任务:" + taskIdx);
+            //  System.out.println("收集任务:" + taskIdx);
         }//循环完成后，所有任务必在收集清单，因为submit方法 会在队列溢出时 阻塞。
 //        System.out.println("future0");
 
@@ -74,7 +76,7 @@ public class MulThreadUtil {
      */
     private static <T> void eleMulThreadDeal(int taskIdx, MulThreadInterface mulThreadInterface) {
         boolean b = mulThreadInterface.taskDeal(taskIdx);
-      //  System.out.println("任务" + taskIdx + ":" + b);
+        //  System.out.println("任务" + taskIdx + ":" + b);
     }
 
     /**
@@ -89,13 +91,14 @@ public class MulThreadUtil {
 
         /**
          * 生成固定大小的线程池
+         *
          * @return 线程池
          */
         public static ExecutorService createFixedThreadPool() {
 
             return new ThreadPoolExecutor(
                     // 核心线程数
-                   20,
+                    20,
                     // 最大线程数
                     20,
                     // 空闲线程存活时间
@@ -115,9 +118,38 @@ public class MulThreadUtil {
          * 理想的线程数，使用 2倍cpu核心数
          */
         public static int availableProcessors() {
-            int i = Runtime.getRuntime().availableProcessors() ;
+            int i = Runtime.getRuntime().availableProcessors();
             System.out.println(i);
             return i;
         }
     }
+
+
+    public static void splitPdf(String inputFullPath) {
+        String separator = File.separator;
+        String inputPath = inputFullPath.substring(0, inputFullPath.lastIndexOf(separator));
+        String inputFileName = inputFullPath.substring(inputFullPath.lastIndexOf(separator) + 1).replace(".pdf", "");
+        String outputFullPath = inputPath + separator + "img" + separator;
+        System.out.println("输入根路径 : " + inputPath);
+        System.out.println("输出根路径 : " + outputFullPath);
+        System.out.println("输入文件名 : " + inputFileName);
+
+
+        //从filePath 中截取楚fileName
+        String fileName = inputFullPath.substring(inputFullPath.lastIndexOf("\\") + 1).replace(".pdf", "");
+//        System.out.println("fileName:" + fileName);
+
+        String imagePath = outputFullPath;
+        System.out.println(imagePath);
+        //如果imagePath不是文件夹，创建文件夹
+        TimeStatic.recordTime(TimeStatic.ProcessNodeEnum.TASK_START);
+        File file = new File(imagePath);
+        if (!file.isDirectory()) {
+            file.mkdirs();
+        }
+        ImageUtils.pdf2image(inputFullPath, fileName, imagePath);
+        TimeStatic.recordTime(TimeStatic.ProcessNodeEnum.TASK_END);
+        System.out.println(TimeStatic.TIME_RECORD);//xxxxxx
+    }
+
 }
